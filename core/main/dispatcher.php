@@ -28,11 +28,20 @@ class dispatcher
         {
             require_once($controllerfile);
             $app = new $controller();
-            $app->use_layout = true;
+            //$app->use_layout = true;
             $app->setParams($params);
-            $app->$action();
+            //if(is_callable($app->{$action}))
+            {
+                $app->$action();
+            }
+            //else
+            {
+                
+            }
             unittest::tearDown();
+            /*
             ob_end_clean();
+            
             // Zarzadzanie widokiem.
             ob_start();
             $view = loader::load("view");
@@ -51,6 +60,7 @@ class dispatcher
             $output = ob_get_clean();
             // $cache->set("abcde", array("content"=>base64_encode($output)));
             echo $output;
+            */
         }
         else
         {

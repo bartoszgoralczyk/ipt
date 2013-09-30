@@ -13,10 +13,26 @@ class router
         {
             require_once ('app/config/routes.php');
         }
-        $path = array_keys($_GET);
+        $path = array();
+        if ($_SERVER['REQUEST_METHOD'] == 'GET')
+        {
+            $path = array_keys($_GET);
+        }
         $config = loader::load('config'); //load config 
         
-        $route = isset($path[0]) ? $path[0] : $config->default_controller;
+        if (isset($path[0]))
+        {
+            if ($path[0] == 'bootstrap')
+            {
+                echo file_get_contents($_SERVER['REQUEST_URI']);
+                exit();
+            }
+            $route = $path[0];
+        }
+        else
+        {
+            $route = $config->default_controller;
+        }
         
         $sanitzing_pattern = $config->allowed_url_chars;
         $route = preg_replace($sanitzing_pattern, '', $route);
