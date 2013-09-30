@@ -28,16 +28,9 @@ class dispatcher
         {
             require_once($controllerfile);
             $app = new $controller();
-            //$app->use_layout = true;
             $app->setParams($params);
-            //if(is_callable($app->{$action}))
-            {
-                $app->$action();
-            }
-            //else
-            {
-                
-            }
+            $app->$action();
+            
             unittest::tearDown();
             /*
             ob_end_clean();
