@@ -32,7 +32,7 @@ class db
             ['db']['{$state}']");
       }
    }
-   private function __call($method, $args)
+   function __call($method, $args)
    {
       if (empty($this->dbengine)) return 0;
       if (!method_exists($this, $method))

@@ -2,6 +2,11 @@
 class model
 {
    private $loaded = array();
+   public $db;
+   function __construct()
+   {
+       //$this->db = loader::load('db');
+   }
    function __get($model)
    {
       $model .="model";

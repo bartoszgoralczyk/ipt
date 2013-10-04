@@ -2,19 +2,19 @@
 
 class main extends controller
 {
+    public $template;
+    public $layout;
+    
     function __construct()
     {
         parent::__construct();
-        $this->view->setLayout('std');
-        $this->view->controller = 'main';
     }
     
     public function index()
     {
-        $this->view->setTemplate('index');
+        $this->layout = 'std';
+        $this->template = 'index';
     
-        $this->view->set("baseurl", base::baseUrl());
-        $this->view->render();
     }
 
 }

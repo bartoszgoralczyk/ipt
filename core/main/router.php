@@ -1,20 +1,19 @@
 <?php
 
-class router
+class Router
 {
     private $route;
     private $controller;
     private $action;
     private $params;
+    private $requestType;
     
     public function __construct()
     {
-        if (file_exists('app/config/routes.php'))
-        {
-            require_once ('app/config/routes.php');
-        }
         $path = array();
-        if ($_SERVER['REQUEST_METHOD'] == 'GET')
+        $this->getRequestType();
+        
+        if ($this->requestType == 'get' OR $this->requestType == 'post')
         {
             $path = array_keys($_GET);
         }
@@ -33,23 +32,54 @@ class router
         array_shift($routeParts);
         array_shift($routeParts);
         $this->params = $routeParts;
-        
-        if (isset($routes))
+        if ($this->requestType == 'post')
         {
-            foreach ($routes as $_route)
-            {
-                $_pattern = "~{$_route[0]}~";
-                $_destination = $_route[1];
-                if (preg_match($_pattern, $route))
-                {
-                    $newrouteparts = preg_split("/\//", $_destination);
-                    $this->controller = $newrouteparts[0];
-                    $this->action = $newrouteparts[1];
-                }
-            }
+            $this->params = array_merge($_POST, $this->params);
         }
     }
     
+    public function dispatch()
+    {
+        $controllerfile = "app/controllers/{$this->controller}.php";
+        if (file_exists($controllerfile))
+        {
+            require_once($controllerfile);
+            $controller = new $this->controller();
+            $controller->setParams($this->params);
+            if (method_exists($controller, $this->action))
+            {
+                $controller->{$this->action}();
+            }
+            else
+            {
+                throw new Exception("Metoda '{$athis->ction}' nie zostala znaleziona.");
+            }
+            
+            $view = loader::load("view");
+            $view->render($controller);
+        }
+        else
+        {
+            throw new Exception("Kontroler '{$controllerfile}' nie zostal znaleziony.");
+        }
+    }
+    
+    public function getRequestType()
+    {
+        $req = strtolower($_SERVER['REQUEST_METHOD']);
+        switch ($req)
+        {
+            case 'get':
+                $this->requestType = $req;
+                break;
+            case 'post':
+                $this->requestType = $req;
+                break;
+            default:
+                $this->requestType = 'get';
+                break;
+        }
+    }
     public function getAction()
     {
         return $this->action;
