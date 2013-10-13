@@ -2,6 +2,7 @@
 class library
 {
    private $loaded = array();
+   
    function __get($lib)
    {
       if (empty($this->loaded[$lib]))
